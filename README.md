@@ -4,4 +4,4 @@
 
 ## Part 2: Push Button
 
-###### External interrupts work by...
+###### How do external interrupts work? GPIO peripheral detects the external event and a interrupt request is generated once the pending request is accepted based on its priority. The Interrupt Service Routine runs and after the handler completes the interrupts execution, the CPU continues with running the rest of the program. 
