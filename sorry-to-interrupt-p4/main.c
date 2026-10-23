@@ -101,6 +101,7 @@ int main(void)
 	while(1){}
 }
 
+//when button is pressed/released, handler clears the interrupts, sets 1 or 0
 void EXTI15_10_IRQHandler(void){
 
 	uint32_t *exti_pr1 = (uint32_t *)(0x40010400 + 0x14);
@@ -120,18 +121,20 @@ void TIM4_IRQHandler(void){
 	uint32_t *gpioc_odr = (uint32_t *)(0x48000800 + 0x14);
 	static uint32_t state = 1; //green on, next is blue
 
-	if(*tim4_sr & (1UL << 0)){
-		*tim4_sr &= ~(1UL << 0); //clear
+	if(*tim4_sr & (1UL << 0)){ //checks if interrupt occurs
+		*tim4_sr &= ~(1UL << 0); //clear's flaf
 
+		//onlu change LEDs if button is NOT being held
 		if(pause == 0){
 			*gpioc_odr &= ~(1UL << 7);
 			*gpiob_odr &= ~((1UL << 7) | (1UL << 14));
 
+			//turns off all 3 LEDS
 			if(state == 0) *gpioc_odr |= (1UL << 7); //green
 				else if(state == 1) *gpiob_odr |= (1UL << 7); //blue
 				else *gpiob_odr |= (1UL << 14); //red
 
-				state = (state + 1) % 3;
+				state = (state + 1) % 3; //turns on match LED
 		}
 	}
 }
